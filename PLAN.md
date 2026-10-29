@@ -231,3 +231,31 @@ Left on the test phone: notifications granted, battery exemption granted, Automa
 
 Teardown after each test: `adb shell cmd connectivity airplane-mode disable` (over USB,
 so adb stays connected).
+
+**Phase 6 result (done 2026-10-29, realme RMX3890, Android 15):**
+
+| Scenario | Result |
+|---|---|
+| Normal scheduled run, screen off + PIN locked | ✔ fires at the exact second, airplane on, run logged, next-day alarm armed (Phase 3) |
+| Already in airplane mode | ✔ `Skipped: Already in airplane mode` (Phase 4) |
+| App process killed/crashed before the alarm | ✔ alarm cold-starts the app, system re-binds the assistant, run succeeds (Phase 3) |
+| Battery Saver on + battery-optimization exemption removed + Restricted standby bucket | ✔ two alarms (20:56, 21:00) fired at the exact minute and succeeded |
+| Deep Doze | ⚠ **not reachable**: `deviceidle force-idle` / `step deep` stay at `INACTIVE` on this ROM over USB, so Doze itself was not exercised. Alarm-clock alarms are Doze-exempt by design. |
+| Reboot | ✔ alarm re-armed and fired at 21:06 after `adb reboot` (observed twice) |
+| Reboot, alarm before first unlock | ⚠ **not verified**: `sys.boot_completed` only appears after the PIN is entered and the user unlocked the phone each time. Device-protected mirror + queued log path is implemented but only exercised for the unlocked case. |
+| Disabled automation | ✔ alarm cancelled (0 pending alarms), no fire |
+| Weekday filter | ✔ on device: Mon-only → 2026-11-02 23:00, Sat+Sun 08:00 → 2026-10-31, Thu-only after the time → 2026-11-05 (plus unit tests) |
+| Time-zone change | ⚠ **not verified on device**: shell lacks `SUGGEST_MANUAL_TIME_AND_ZONE`. `TIMEZONE_CHANGED` → `rearmAllFromStore()` is implemented; unit tests cover DST gaps and fall-back. |
+| Failure path (no assistant role) | ✔ `Failed` logged + notification (Phase 3) |
+| Setup checklist | ✔ every button and the "all good" state (Phase 5) |
+| Crashes | none in the crash buffer during the whole session |
+
+Left on the phone: Automations is the default assistant, notifications and unrestricted battery use are granted, the airplane
+automation is **disabled** (23:00 every day), no alarms pending, airplane mode off, battery/Battery Saver/time zone restored.
+The three realme manual items are intentionally left unchecked until you do them in system settings.
+
+### Still open / ideas for later
+- Verify the before-first-unlock path by hand: enable a schedule 5 min ahead, reboot, don't unlock, unlock after the time → the run should appear in History.
+- Verify a real Doze night (leave it enabled at 23:00 and check History next morning).
+- Release build + signing key (only needed if you want a non-debug APK; the `DebugReceiver` is not in release builds).
+- Next automations go in `AutomationRegistry`.
