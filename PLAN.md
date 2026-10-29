@@ -175,6 +175,19 @@ Build notes: platform theme `Theme.DeviceDefault.DayNight` (no `Material.DayNigh
 `AlarmScheduler`, `AlarmReceiver`, `BootReceiver` (+ direct-boot mirror), rescheduling on
 edit/toggle/time change. Failure notification channel.
 
+**Phase 3 result (done 2026-10-29):** `AlarmScheduler` (one `setAlarmClock` per enabled automation, only the next
+occurrence armed), `AlarmReceiver` (re-arms first, then runs, logs, notifies on failure), `BootReceiver`
+(`LOCKED_BOOT_COMPLETED`, `BOOT_COMPLETED`, `TIME_SET`, `TIMEZONE_CHANGED`, `MY_PACKAGE_REPLACED`),
+`ScheduleStore` (device-protected mirror + queue of run-log entries made while Room is locked), `AutomationManager`
+(single entry point: Room + mirror + alarm), `Notifier` (failure channel), debug-only `DebugReceiver` for adb:
+`adb shell am broadcast -n io.github.romanfabio.automations/.debug.DebugReceiver -a CONFIG --es id airplane_on --ez enabled true --ei hour 23 --ei minute 0 --ei days 127`.
+Verified on the phone: alarm fires at the exact minute with the screen off + PIN locked (✔); with the process
+crashed beforehand, the system re-binds the assistant and the run still succeeds (✔); next-day alarm is armed after each
+fire (✔); disabling cancels the alarm (✔); with another app as assistant the run is logged **Failed** and a
+notification is posted (✔); after `adb reboot` the alarm is re-armed (✔).
+Correction to the earlier design note: `USE_EXACT_ALARM` **is** required for `setAlarmClock` on Android 14+ (without it the app crashed with a SecurityException), so it stays in the manifest.
+Not verified: a fire *before the first unlock* after reboot (the phone was already unlocked when checked; the code path uses only device-protected storage). Battery-saver / Doze are covered in Phase 6.
+
 ### Phase 4 — Airplane mode automation
 Production version of the spike logic, with skip/verify/fail handling as above.
 

@@ -1,10 +1,12 @@
 package io.github.romanfabio.automations.automation
 
 import android.content.Context
+import android.os.UserManager
 import io.github.romanfabio.automations.data.AutomationRepository
 import io.github.romanfabio.automations.data.RunLog
 import io.github.romanfabio.automations.data.RunStatus
 import io.github.romanfabio.automations.data.RunTrigger
+import io.github.romanfabio.automations.schedule.ScheduleStore
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -13,6 +15,7 @@ import kotlinx.coroutines.sync.withLock
 class AutomationRunner(
     private val context: Context,
     private val repository: AutomationRepository,
+    private val store: ScheduleStore,
 ) {
     private val mutex = Mutex()
 
@@ -24,7 +27,7 @@ class AutomationRunner(
         } catch (e: Exception) {
             RunResult.Failed(e.message ?: e::class.java.simpleName)
         }
-        repository.log(
+        record(
             RunLog(
                 automationId = automation.id,
                 timestamp = System.currentTimeMillis(),
@@ -38,5 +41,14 @@ class AutomationRunner(
             ),
         )
         result
+    }
+
+    /** Before the first unlock after a reboot Room can't be opened, so the entry is queued for later. */
+    private suspend fun record(entry: RunLog) {
+        if (context.getSystemService(UserManager::class.java).isUserUnlocked) {
+            repository.log(entry)
+        } else {
+            store.addPendingLog(entry)
+        }
     }
 }

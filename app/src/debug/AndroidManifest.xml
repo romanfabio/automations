@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Debug builds only: lets adb change an automation's config through the real code path. -->
+        <receiver
+            android:name=".debug.DebugReceiver"
+            android:exported="true" />
+    </application>
+</manifest>

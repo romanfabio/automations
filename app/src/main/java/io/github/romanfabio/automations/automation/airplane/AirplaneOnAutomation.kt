@@ -33,6 +33,11 @@ class AirplaneOnAutomation : Automation {
 
     override suspend fun run(context: Context): RunResult {
         if (isAirplaneOn(context)) return RunResult.Skipped("Already in airplane mode")
+        // After the process was killed, the system re-binds the assistant service asynchronously.
+        repeat(SERVICE_WAIT_ATTEMPTS) {
+            if (AutomationsVoiceInteractionService.instance != null) return@repeat
+            delay(POLL_INTERVAL_MS)
+        }
         if (!AutomationsVoiceInteractionService.requestAction(ActionSession.ACTION_AIRPLANE_ON)) {
             return RunResult.Failed("Assistant service not active: set Automations as the default digital assistant")
         }
@@ -47,6 +52,7 @@ class AirplaneOnAutomation : Automation {
         Settings.Global.getInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1
 
     private companion object {
+        const val SERVICE_WAIT_ATTEMPTS = 25
         const val POLL_ATTEMPTS = 25
         const val POLL_INTERVAL_MS = 200L
     }

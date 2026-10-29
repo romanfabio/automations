@@ -57,6 +57,11 @@ class AutomationsViewModel(application: Application) : AndroidViewModel(applicat
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    init {
+        // Self-heal: re-arm alarms that the system may have dropped (e.g. after a force stop).
+        viewModelScope.launch { app.manager.resyncAll() }
+    }
+
     fun history(automationId: String): Flow<List<RunLog>> = repository.history(automationId)
 
     fun refresh() {
@@ -75,6 +80,6 @@ class AutomationsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun update(automation: Automation, change: (AutomationConfig) -> AutomationConfig) {
-        viewModelScope.launch { repository.update(automation, change) }
+        viewModelScope.launch { app.manager.update(automation, change) }
     }
 }
