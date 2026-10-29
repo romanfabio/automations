@@ -10,6 +10,12 @@ import android.util.Log
 /** Invisible assistant session: launches one voice-control settings activity, then hides itself. */
 class ActionSession(context: Context) : VoiceInteractionSession(context) {
 
+    override fun onCreate() {
+        super.onCreate()
+        // This session only launches an action; it must never draw an assistant panel.
+        setUiEnabled(false)
+    }
+
     override fun onShow(args: Bundle?, showFlags: Int) {
         super.onShow(args, showFlags)
         when (val action = args?.getString(EXTRA_ACTION)) {
@@ -45,7 +51,7 @@ class ActionSession(context: Context) : VoiceInteractionSession(context) {
     }
 
     companion object {
-        private const val TAG = "AutoSpike"
+        private const val TAG = "AutoAssist"
         const val EXTRA_ACTION = "action"
         const val ACTION_AIRPLANE_ON = "airplane_on"
     }

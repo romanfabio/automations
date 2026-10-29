@@ -191,6 +191,16 @@ Not verified: a fire *before the first unlock* after reboot (the phone was alrea
 ### Phase 4 — Airplane mode automation
 Production version of the spike logic, with skip/verify/fail handling as above.
 
+**Phase 4 result (done 2026-10-29):** the production airplane automation was already in place from Phase 2/3
+(skip if on → require assistant service (waits up to 5 s for the system to re-bind it after a process kill) → verify by polling
+`AIRPLANE_MODE_ON` for 5 s → `Failed` + notification otherwise). This phase added: `ActionSession.setUiEnabled(false)` so the
+session can never draw a panel (before it, a `VoiceInteractionSession` window stayed registered in `dumpsys window`; after it, none),
+a debug `RUN` hook (`... DebugReceiver -a RUN --es id airplane_on`) that runs an automation with the app in the background, and the
+log tag rename `AutoSpike` → `AutoAssist`. Verified on the phone with the Settings app in front: Run → Success, radios off,
+airplane icon in the status bar; run while already on → Skipped. Visual caveat: a run takes ~150–250 ms, so screenshots only caught the
+state afterwards; no panel was visible in any frame and none is registered any more. Not tested: the airplane toggle with Wi-Fi/Bluetooth
+previously re-enabled by the user (plain airplane mode was the decision).
+
 ### Phase 5 — Setup / health screen
 Checklist + deep links; disable "Run now" and show why when requirements are missing.
 

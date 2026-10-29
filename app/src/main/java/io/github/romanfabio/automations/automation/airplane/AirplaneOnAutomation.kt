@@ -34,9 +34,10 @@ class AirplaneOnAutomation : Automation {
     override suspend fun run(context: Context): RunResult {
         if (isAirplaneOn(context)) return RunResult.Skipped("Already in airplane mode")
         // After the process was killed, the system re-binds the assistant service asynchronously.
-        repeat(SERVICE_WAIT_ATTEMPTS) {
-            if (AutomationsVoiceInteractionService.instance != null) return@repeat
+        var waited = 0
+        while (AutomationsVoiceInteractionService.instance == null && waited < SERVICE_WAIT_ATTEMPTS) {
             delay(POLL_INTERVAL_MS)
+            waited++
         }
         if (!AutomationsVoiceInteractionService.requestAction(ActionSession.ACTION_AIRPLANE_ON)) {
             return RunResult.Failed("Assistant service not active: set Automations as the default digital assistant")

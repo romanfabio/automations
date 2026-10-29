@@ -23,7 +23,7 @@ class AutomationsVoiceInteractionService : VoiceInteractionService() {
     }
 
     companion object {
-        private const val TAG = "AutoSpike"
+        private const val TAG = "AutoAssist"
 
         @Volatile
         var instance: AutomationsVoiceInteractionService? = null
