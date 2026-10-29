@@ -22,11 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.romanfabio.automations.automation.isScheduled
 import io.github.romanfabio.automations.data.RunStatus
+import io.github.romanfabio.automations.setup.SetupItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutomationListScreen(
     items: List<AutomationItem>,
+    setup: List<SetupItem>,
+    onFixSetup: (SetupItem) -> Unit,
+    onSetupDone: (SetupItem) -> Unit,
     onOpen: (AutomationItem) -> Unit,
     onToggle: (AutomationItem, Boolean) -> Unit,
     onRunNow: (AutomationItem) -> Unit,
@@ -37,6 +41,7 @@ fun AutomationListScreen(
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            item { SetupCard(setup, onFixSetup, onSetupDone) }
             items(items, key = { it.automation.id }) { item ->
                 AutomationCard(item, onOpen, onToggle, onRunNow)
             }
@@ -104,7 +109,10 @@ private fun AutomationCard(
             }
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = { onRunNow(item) }) { Text("Run now") }
+                TextButton(
+                    onClick = { onRunNow(item) },
+                    enabled = item.unmetRequirements.isEmpty(),
+                ) { Text("Run now") }
             }
         }
     }

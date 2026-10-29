@@ -204,6 +204,19 @@ previously re-enabled by the user (plain airplane mode was the decision).
 ### Phase 5 — Setup / health screen
 Checklist + deep links; disable "Run now" and show why when requirements are missing.
 
+**Phase 5 result (done 2026-10-29):** `SetupChecker` builds the checklist: each automation's requirements (assistant role, with a
+button that opens the system's "Digital assistant app" screen), Notifications (runtime permission dialog; falls back to the app's
+notification settings if Android no longer shows it), Unrestricted battery use (system "Let app always run in background?" dialog),
+and, on realme/OPPO/OnePlus only, three manual items (Allow auto launch, Allow background activity, Lock in Recents) with an "Open"
+button to the app info page and a "Done" button, remembered in preferences (they can't be detected). `SetupCard` sits on top of the list,
+open while something is missing and collapsible; state refreshes on every resume. "Run now" is disabled when an automation's
+requirement is unmet (list and detail), with the reason shown. The launch-time notification prompt was removed.
+Verified on the phone: card renders, assistant "Open" reaches the system screen and the item turns ✔ on return, notification dialog and
+battery dialog appear and update the card, Run now greys out when the assistant role is removed.
+Findings: no ColorOS auto-launch activity resolves on this ROM (RMX3890, 15.C.43), so the OEM items use the app info page plus written
+instructions instead of guessed component names. Not verified: the "Done" buttons and the "all good" collapsed state (the OEM items are still pending).
+Left on the test phone: notifications granted, battery exemption granted, Automations is the default assistant.
+
 ### Phase 6 — On-device verification (realme RMX3890)
 | Scenario | How |
 |---|---|

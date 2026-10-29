@@ -2,6 +2,7 @@ package io.github.romanfabio.automations.automation.airplane
 
 import android.app.role.RoleManager
 import android.content.Context
+import android.content.Intent
 import android.provider.Settings
 import io.github.romanfabio.automations.assistant.ActionSession
 import io.github.romanfabio.automations.assistant.AutomationsVoiceInteractionService
@@ -25,6 +26,7 @@ class AirplaneOnAutomation : Automation {
         Requirement(
             title = "Default digital assistant",
             howToFix = "Settings > Apps > Default apps > Digital assistant app: choose Automations.",
+            fixIntent = Intent(Settings.ACTION_VOICE_INPUT_SETTINGS),
             isMet = { context ->
                 context.getSystemService(RoleManager::class.java).isRoleHeld(RoleManager.ROLE_ASSISTANT)
             },

@@ -13,6 +13,8 @@ import io.github.romanfabio.automations.data.AutomationConfig
 import io.github.romanfabio.automations.data.RunLog
 import io.github.romanfabio.automations.data.RunTrigger
 import io.github.romanfabio.automations.schedule.NextRunCalculator
+import io.github.romanfabio.automations.setup.SetupChecker
+import io.github.romanfabio.automations.setup.SetupItem
 import java.time.ZonedDateTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,15 +59,30 @@ class AutomationsViewModel(application: Application) : AndroidViewModel(applicat
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    private val setupChecker = SetupChecker(app)
+    private val _setup = MutableStateFlow<List<SetupItem>>(emptyList())
+    val setup: StateFlow<List<SetupItem>> = _setup
+
     init {
+        refreshSetup()
         // Self-heal: re-arm alarms that the system may have dropped (e.g. after a force stop).
         viewModelScope.launch { app.manager.resyncAll() }
+    }
+
+    fun markSetupDone(item: SetupItem) {
+        setupChecker.markManualDone(item.id)
+        refreshSetup()
+    }
+
+    private fun refreshSetup() {
+        _setup.value = setupChecker.items(AutomationRegistry.all)
     }
 
     fun history(automationId: String): Flow<List<RunLog>> = repository.history(automationId)
 
     fun refresh() {
         refreshTick.value++
+        refreshSetup()
     }
 
     fun setEnabled(automation: Automation, enabled: Boolean) = update(automation) { it.copy(enabled = enabled) }

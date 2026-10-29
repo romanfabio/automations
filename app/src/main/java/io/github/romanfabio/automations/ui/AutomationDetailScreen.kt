@@ -128,7 +128,13 @@ fun AutomationDetailScreen(
                 }
             }
 
-            item { Button(onClick = onRunNow, modifier = Modifier.fillMaxWidth()) { Text("Run now") } }
+            item {
+                Button(
+                    onClick = onRunNow,
+                    enabled = item.unmetRequirements.isEmpty(),
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text("Run now") }
+            }
 
             item { Text("History", style = MaterialTheme.typography.titleMedium) }
             if (runs.isEmpty()) {

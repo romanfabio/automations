@@ -1,6 +1,7 @@
 package io.github.romanfabio.automations.automation
 
 import android.content.Context
+import android.content.Intent
 import io.github.romanfabio.automations.data.AutomationConfig
 import io.github.romanfabio.automations.schedule.Weekdays
 
@@ -16,6 +17,8 @@ sealed interface RunResult {
 class Requirement(
     val title: String,
     val howToFix: String,
+    /** System screen where the user can fix it, if there is one. */
+    val fixIntent: Intent? = null,
     val isMet: (Context) -> Boolean,
 )
 
