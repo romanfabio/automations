@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Auto-granted for alarm-style apps; setAlarmClock still needs it on Android 14+. -->
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
@@ -10,6 +11,8 @@
     <application
         android:name=".AutomationsApplication"
         android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:icon="@mipmap/ic_launcher"
         android:label="Automations"
         android:theme="@style/Theme.Automations">
 
@@ -57,9 +60,11 @@
             android:exported="true"
             android:permission="android.permission.BIND_VOICE_INTERACTION" />
 
+        <!-- Does nothing (empty stub). Must be exported so the system can bind it for the assistant role. -->
         <service
             android:name=".assistant.StubRecognitionService"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.speech.RecognitionService" />
                 <category android:name="android.intent.category.DEFAULT" />

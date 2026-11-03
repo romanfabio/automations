@@ -1,8 +1,46 @@
+# Gradle / build output
 .gradle/
 build/
-local.properties
-*.iml
-.idea/
 .kotlin/
 *.apk
+*.aab
+*.ap_
+*.dex
+*.hprof
+
+# Android tooling
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Secrets and signing material: never commit these
+keystore.properties
+secrets.properties
+*.jks
 *.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+google-services.json
+service-account*.json
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.fleet/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local assistant/tool state and scratch files
+.claude/
+*.log
+hs_err_pid*

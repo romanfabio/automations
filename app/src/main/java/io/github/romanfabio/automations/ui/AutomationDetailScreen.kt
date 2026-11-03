@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,7 +35,6 @@ import io.github.romanfabio.automations.data.RunStatus
 import io.github.romanfabio.automations.schedule.Weekdays
 import java.time.DayOfWeek
 import java.time.format.TextStyle
-import java.util.Locale
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -49,6 +49,7 @@ fun AutomationDetailScreen(
     onRunNow: () -> Unit,
 ) {
     val context = LocalContext.current
+    val locale = LocalConfiguration.current.locales[0]
     val runs by history.collectAsStateWithLifecycle(initialValue = emptyList())
     val automation = item.automation
     val config = item.config
@@ -98,7 +99,7 @@ fun AutomationDetailScreen(
                                         // At least one day must stay selected, or the schedule would never fire.
                                         if (next != 0) onDays(next)
                                     },
-                                    label = { Text(day.getDisplayName(TextStyle.SHORT, Locale.getDefault())) },
+                                    label = { Text(day.getDisplayName(TextStyle.SHORT, locale)) },
                                 )
                             }
                         }

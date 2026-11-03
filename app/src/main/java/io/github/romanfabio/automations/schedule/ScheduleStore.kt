@@ -1,6 +1,7 @@
 package io.github.romanfabio.automations.schedule
 
 import android.content.Context
+import androidx.core.content.edit
 import io.github.romanfabio.automations.data.AutomationConfig
 import io.github.romanfabio.automations.data.RunLog
 import io.github.romanfabio.automations.data.RunStatus
@@ -19,9 +20,10 @@ class ScheduleStore(context: Context) {
 
     @Synchronized
     fun put(config: AutomationConfig) {
-        prefs.edit()
-            .putString(configKey(config.id), "${config.enabled}|${config.hour}|${config.minute}|${config.daysMask}")
-            .commit()
+        // commit = true: receivers are short-lived, so the write must be on disk before they return.
+        prefs.edit(commit = true) {
+            putString(configKey(config.id), "${config.enabled}|${config.hour}|${config.minute}|${config.daysMask}")
+        }
     }
 
     @Synchronized
@@ -48,7 +50,7 @@ class ScheduleStore(context: Context) {
                 .put("status", log.status.name)
                 .put("message", log.message),
         )
-        prefs.edit().putString(PENDING_KEY, array.toString()).commit()
+        prefs.edit(commit = true) { putString(PENDING_KEY, array.toString()) }
     }
 
     /** Returns and clears the queued entries. */
@@ -56,7 +58,7 @@ class ScheduleStore(context: Context) {
     fun takePendingLogs(): List<RunLog> {
         val array = JSONArray(prefs.getString(PENDING_KEY, "[]"))
         if (array.length() == 0) return emptyList()
-        prefs.edit().remove(PENDING_KEY).commit()
+        prefs.edit(commit = true) { remove(PENDING_KEY) }
         return (0 until array.length()).map { i ->
             val o = array.getJSONObject(i)
             RunLog(

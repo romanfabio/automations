@@ -3,7 +3,6 @@ package io.github.romanfabio.automations.ui
 import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -14,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.romanfabio.automations.setup.SetupItem
@@ -33,7 +33,7 @@ fun AutomationsApp(viewModel: AutomationsViewModel = viewModel()) {
         } catch (_: ActivityNotFoundException) {
             // Some ROMs lack a screen; the app info page always exists.
             context.startActivity(
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:${context.packageName}")),
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData("package:${context.packageName}".toUri()),
             )
         }
     }

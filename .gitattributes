@@ -1,0 +1,9 @@
+# Normalise line endings so Windows and Linux/macOS contributors produce identical diffs.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binaries
+*.jar binary
+*.png binary
+*.webp binary

@@ -1,11 +1,12 @@
 package io.github.romanfabio.automations.schedule
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import io.github.romanfabio.automations.MainActivity
 import io.github.romanfabio.automations.automation.AutomationRegistry
 import io.github.romanfabio.automations.automation.isScheduled
@@ -34,6 +35,8 @@ class AlarmScheduler(private val context: Context, private val store: ScheduleSt
         }
     }
 
+    // USE_EXACT_ALARM (declared in the manifest) covers this; lint only looks for SCHEDULE_EXACT_ALARM.
+    @SuppressLint("MissingPermission")
     fun arm(config: AutomationConfig) {
         val next = if (config.enabled) {
             NextRunCalculator.next(config.hour, config.minute, config.daysMask, ZonedDateTime.now())
@@ -60,7 +63,7 @@ class AlarmScheduler(private val context: Context, private val store: ScheduleSt
         // The data URI makes the intent unique per automation, so each one has its own alarm.
         val intent = Intent(context, AlarmReceiver::class.java)
             .setAction(AlarmReceiver.ACTION_FIRE)
-            .setData(Uri.parse("automation://$id"))
+            .setData("automation://$id".toUri())
             .putExtra(AlarmReceiver.EXTRA_ID, id)
         return PendingIntent.getBroadcast(
             context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,

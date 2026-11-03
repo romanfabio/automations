@@ -1,12 +1,14 @@
 package io.github.romanfabio.automations.setup
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import androidx.core.content.edit
+import androidx.core.net.toUri
 import io.github.romanfabio.automations.automation.Automation
 
 /** One line of the setup checklist. */
@@ -31,6 +33,8 @@ class SetupChecker(private val context: Context) {
     private val prefs = context.getSharedPreferences("setup", Context.MODE_PRIVATE)
     private val packageName = context.packageName
 
+    // Play Store policy restricts the battery-optimization request below; this app is distributed outside the Play Store.
+    @SuppressLint("BatteryLife")
     fun items(automations: List<Automation>): List<SetupItem> = buildList {
         automations.flatMap { it.requirements() }.distinctBy { it.title }.forEach { requirement ->
             add(
@@ -58,12 +62,12 @@ class SetupChecker(private val context: Context) {
                 title = "Unrestricted battery use",
                 detail = "Stops battery optimization from delaying or blocking scheduled runs.",
                 met = context.getSystemService(PowerManager::class.java).isIgnoringBatteryOptimizations(packageName),
-                intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                    .setData(Uri.parse("package:$packageName")),
+                intent =Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                    .setData("package:$packageName".toUri()),
             ),
         )
         if (isOplusFamily()) {
-            val appInfo = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:$packageName"))
+            val appInfo = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData("package:$packageName".toUri())
             add(manual("oem_autolaunch", "Allow auto launch", "App info > Battery usage > turn on \"Allow auto launch\".", appInfo))
             add(manual("oem_background", "Allow background activity", "App info > Battery usage > turn on \"Allow background activity\".", appInfo))
             add(manual("oem_recents", "Lock in Recents", "Open Recents, long-press the Automations card, choose Lock, so cleaning apps doesn't kill it."))
@@ -71,7 +75,7 @@ class SetupChecker(private val context: Context) {
     }
 
     fun markManualDone(id: String) {
-        prefs.edit().putBoolean(manualKey(id), true).apply()
+        prefs.edit { putBoolean(manualKey(id), true) }
     }
 
     private fun manual(id: String, title: String, detail: String, intent: Intent? = null) = SetupItem(
