@@ -3,6 +3,17 @@
 All notable changes are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-11-06
+
+### Added
+- **About** screen (button at the top right of the main screen) with the app version, the MIT license, the list of
+  third-party libraries and the full Apache License 2.0 text, so the license notices travel inside the APK. The texts are
+  the repository's own `LICENSE`, `THIRD_PARTY_LICENSES.md` and `licenses/APACHE-2.0.txt`, bundled at build time.
+
+### Changed
+- `versionCode` is now 2 (an upgrade needs a higher code). The signing key is unchanged, so 1.0.0 upgrades in place and
+  keeps its settings.
+
 ## [1.0.0] - 2026-11-06
 
 First public release.
@@ -27,4 +38,5 @@ First public release.
   on a device (see `docs/TESTING.md`).
 - Not suitable for Google Play as is (battery-optimization and exact-alarm policies).
 
+[1.0.1]: https://github.com/romanfabio/automations/releases/tag/v1.0.1
 [1.0.0]: https://github.com/romanfabio/automations/releases/tag/v1.0.0

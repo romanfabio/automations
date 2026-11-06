@@ -17,6 +17,39 @@ val keystoreProperties = Properties().apply {
     if (file.isFile) file.inputStream().use(::load)
 }
 
+// The About screen shows the repository's license texts. They are copied from the repository root at build time,
+// so the documents and the app cannot drift apart.
+abstract class CopyLicenseAssets : DefaultTask() {
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.NAME_ONLY)
+    abstract val licenseFiles: ConfigurableFileCollection
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun copy() {
+        val out = outputDir.get().asFile
+        out.deleteRecursively()
+        out.mkdirs()
+        licenseFiles.files.forEach { it.copyTo(File(out, it.name), overwrite = true) }
+    }
+}
+
+val copyLicenseAssets = tasks.register<CopyLicenseAssets>("copyLicenseAssets") {
+    licenseFiles.from(
+        rootProject.file("LICENSE"),
+        rootProject.file("THIRD_PARTY_LICENSES.md"),
+        rootProject.file("licenses/APACHE-2.0.txt"),
+    )
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.sources.assets?.addGeneratedSourceDirectory(copyLicenseAssets, CopyLicenseAssets::outputDir)
+    }
+}
+
 android {
     namespace = "io.github.romanfabio.automations"
     compileSdk = 36
@@ -25,8 +58,8 @@ android {
         applicationId = "io.github.romanfabio.automations"
         minSdk = 33
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.0.1"
     }
 
     signingConfigs {

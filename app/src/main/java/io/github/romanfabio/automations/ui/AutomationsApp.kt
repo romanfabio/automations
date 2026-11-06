@@ -25,6 +25,7 @@ fun AutomationsApp(viewModel: AutomationsViewModel = viewModel()) {
     val items by viewModel.items.collectAsStateWithLifecycle()
     val setup by viewModel.setup.collectAsStateWithLifecycle()
     var openId by rememberSaveable { mutableStateOf<String?>(null) }
+    var showAbout by rememberSaveable { mutableStateOf(false) }
     val open = items.firstOrNull { it.automation.id == openId }
 
     fun startSafely(intent: Intent) {
@@ -56,12 +57,16 @@ fun AutomationsApp(viewModel: AutomationsViewModel = viewModel()) {
         }
     }
 
-    if (open == null) {
+    if (showAbout) {
+        BackHandler { showAbout = false }
+        AboutScreen(onBack = { showAbout = false })
+    } else if (open == null) {
         AutomationListScreen(
             items = items,
             setup = setup,
             onFixSetup = fixSetup,
             onSetupDone = viewModel::markSetupDone,
+            onAbout = { showAbout = true },
             onOpen = { openId = it.automation.id },
             onToggle = { item, enabled -> viewModel.setEnabled(item.automation, enabled) },
             onRunNow = { viewModel.runNow(it.automation) },

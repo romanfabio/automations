@@ -31,11 +31,19 @@ fun AutomationListScreen(
     setup: List<SetupItem>,
     onFixSetup: (SetupItem) -> Unit,
     onSetupDone: (SetupItem) -> Unit,
+    onAbout: () -> Unit,
     onOpen: (AutomationItem) -> Unit,
     onToggle: (AutomationItem, Boolean) -> Unit,
     onRunNow: (AutomationItem) -> Unit,
 ) {
-    Scaffold(topBar = { TopAppBar(title = { Text("Automations") }) }) { padding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Automations") },
+                actions = { TextButton(onClick = onAbout) { Text("About") } },
+            )
+        },
+    ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),

@@ -7,7 +7,7 @@ design is in [docs/DESIGN.md](docs/DESIGN.md) and the device test log in [docs/T
 
 Android app (Kotlin, Compose, Room) that runs predefined automations on a schedule or on demand. Only one
 automation exists today: turn airplane mode on. Android-only; **minSdk 33 (Android 13)**, targetSdk 35,
-compileSdk 36, versionName 1.0.0. Package and applicationId: `io.github.romanfabio.automations`.
+compileSdk 36, versionName 1.0.1 (versionCode 2). Package and applicationId: `io.github.romanfabio.automations`.
 
 ## Commands
 
@@ -89,7 +89,12 @@ phone. More scenarios: [docs/TESTING.md](docs/TESTING.md).
 - Dependencies are pinned in `gradle/libs.versions.toml`. The Compose BOM is deliberately **2026.06.01**: newer BOMs need
   AGP 9.1 and compileSdk 37. When changing any dependency, check its license (Apache-2.0 / MIT / BSD only) and update
   `THIRD_PARTY_LICENSES.md`.
+- `LICENSE`, `THIRD_PARTY_LICENSES.md` and `licenses/APACHE-2.0.txt` are bundled into the APK as assets by the
+  `copyLicenseAssets` task (AGP generated-assets API) and rendered on the About screen by `parseLicenseText`. Keep them
+  plain: `#` headings, `- ` one-line bullets and blank-line separated paragraphs. No tables, code fences or links, because
+  the in-app renderer does not understand them (`LicenseTextTest` parses the real files).
 - Keep the minimum Android version in sync in `app/build.gradle.kts`, `README.md` and this file.
+- `versionCode` must increase with every release, or Android refuses the upgrade.
 - Version bumps: `versionName` / `versionCode` in `app/build.gradle.kts`, plus the version line in `README.md`.
 
 ## Releasing

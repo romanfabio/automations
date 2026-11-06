@@ -26,8 +26,9 @@ missing the release APK is simply left unsigned, so contributors can still build
 
 ## Per release
 
-1. Update `versionName` and `versionCode` in `app/build.gradle.kts`, the version line in `README.md`, and add an entry
-   to `CHANGELOG.md`.
+1. Update `versionName` and `versionCode` in `app/build.gradle.kts` (the code **must** increase, or Android refuses the
+   upgrade), the version line and file names in `README.md`, and add an entry to `CHANGELOG.md`. If dependencies
+   changed, update `THIRD_PARTY_LICENSES.md` (it is also shown in the app's About screen).
 2. `./gradlew clean testDebugUnitTest lintRelease assembleRelease` with the signing variable set.
 3. Verify and checksum the APK:
    ```bash

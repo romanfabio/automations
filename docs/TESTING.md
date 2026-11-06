@@ -31,6 +31,8 @@ checked: version 1.0.0.
 | Setup checklist | Pass. Each Open button, the notification and battery dialogs, the Done buttons, the "all good" state |
 | Assistant panel visibility | Not visible in screenshots; no assistant window remains registered after a run |
 | Crashes | None in the crash buffer during the whole test session |
+| **Upgrade 1.0.0 → 1.0.1** over the same signing key (`adb install -r`) | Pass. Version code 1 → 2, data and the assistant role kept |
+| License files packaged in the 1.0.1 APK | Pass. `assets/LICENSE`, `assets/THIRD_PARTY_LICENSES.md` and `assets/APACHE-2.0.txt` are in both debug and release APKs and byte-identical to the repository files; `LicenseTextTest` parses the real documents |
 | **Signed 1.0.0 release APK**, fresh install (debug build uninstalled first) | Pass. Not debuggable; Setup card shows 5 of 6 items on a clean install (dark theme); **Run now** turns airplane mode on; the time picker (keyboard entry) saves a new time; with a schedule set 4 minutes ahead the alarm fired by itself at the exact second (`12:08:00`), airplane mode switched on, History shows "Done · scheduled", and the next run moved to the next day. Release builds have no debug hook, so the screen stayed on for this run (the locked-screen case was verified earlier with the debug build, same code) |
 
 ### Things worth verifying by hand

@@ -9,7 +9,7 @@ selected weekdays. If the phone is already in airplane mode, it does nothing.
 
 More automations are meant to be added one by one: see [Adding an automation](#adding-an-automation).
 
-- **Version:** 1.0.0
+- **Version:** 1.0.1
 - **Minimum Android version: Android 13 (API 33)**
 - **Tested on:** Android 15 only, one device (realme RMX3890, realme UI / ColorOS 15). Other versions and
   manufacturers are untested. See [docs/TESTING.md](docs/TESTING.md).
@@ -69,7 +69,7 @@ There are no store listings. Either download the signed APK from the
 phone:
 
 ```bash
-adb install -r automations-1.0.0.apk
+adb install -r automations-1.0.1.apk
 ```
 
 (You can also open the APK on the phone and allow installs from your browser or file manager.)
@@ -79,12 +79,12 @@ adb install -r automations-1.0.0.apk
 Each release publishes `automations-<version>.apk` and a `.sha256` file. Check the file you downloaded:
 
 ```bash
-sha256sum -c automations-1.0.0.apk.sha256
+sha256sum -c automations-1.0.1.apk.sha256
 ```
 
-On Windows PowerShell: `(Get-FileHash automations-1.0.0.apk -Algorithm SHA256).Hash` and compare it with the `.sha256` file.
+On Windows PowerShell: `(Get-FileHash automations-1.0.1.apk -Algorithm SHA256).Hash` and compare it with the `.sha256` file.
 Release APKs are signed with a key whose certificate has this SHA-256 fingerprint
-(check with `apksigner verify --print-certs automations-1.0.0.apk`):
+(check with `apksigner verify --print-certs automations-1.0.1.apk`):
 
 ```
 a8eb55858f61723f49a0579dbc84102a7290b69782afe2e8816f645849da402c
@@ -153,6 +153,7 @@ app/src/main/java/io/github/romanfabio/automations/
   ui/           Compose screens
 app/src/debug/  Debug-only adb hook (not part of release builds)
 docs/           Design notes and the on-device test log
+licenses/       Full license text bundled into the app (shown on the About screen)
 ```
 
 More detail: [docs/DESIGN.md](docs/DESIGN.md).
@@ -176,4 +177,5 @@ Issues and pull requests are welcome. Please run `./gradlew testDebugUnitTest li
 ## License
 
 Released under the [MIT License](LICENSE). Third-party libraries and their licenses are listed in
-[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and are also shown inside the app, under **About** (top right of the
+main screen), together with the full Apache License 2.0 text ([licenses/APACHE-2.0.txt](licenses/APACHE-2.0.txt)).
