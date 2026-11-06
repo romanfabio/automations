@@ -31,6 +31,7 @@ checked: version 1.0.0.
 | Setup checklist | Pass. Each Open button, the notification and battery dialogs, the Done buttons, the "all good" state |
 | Assistant panel visibility | Not visible in screenshots; no assistant window remains registered after a run |
 | Crashes | None in the crash buffer during the whole test session |
+| **Signed 1.0.0 release APK**, fresh install (debug build uninstalled first) | Pass. Not debuggable; Setup card shows 5 of 6 items on a clean install (dark theme); **Run now** turns airplane mode on; the time picker (keyboard entry) saves a new time; with a schedule set 4 minutes ahead the alarm fired by itself at the exact second (`12:08:00`), airplane mode switched on, History shows "Done · scheduled", and the next run moved to the next day. Release builds have no debug hook, so the screen stayed on for this run (the locked-screen case was verified earlier with the debug build, same code) |
 
 ### Things worth verifying by hand
 
