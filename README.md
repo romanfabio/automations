@@ -15,6 +15,19 @@ More automations are meant to be added one by one: see [Adding an automation](#a
   manufacturers are untested. See [docs/TESTING.md](docs/TESTING.md).
 - **License:** [MIT](LICENSE)
 
+## Screenshots
+
+<table>
+  <tr>
+    <td valign="top"><img src="docs/screenshots/list.png" alt="Automation list: setup status, schedule, next run and last run" width="300"></td>
+    <td valign="top"><img src="docs/screenshots/detail.png" alt="Automation detail: enable switch, time, weekdays, Run now and run history" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>The list: setup status, schedule, next and last run</sub></td>
+    <td align="center"><sub>The detail screen: time, weekdays, Run now and history</sub></td>
+  </tr>
+</table>
+
 ## How it works
 
 - **Scheduling** uses exact alarm-clock alarms (`AlarmManager.setAlarmClock`). They fire on time in Doze and
