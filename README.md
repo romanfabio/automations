@@ -51,13 +51,34 @@ private storage and are excluded from backup and device transfer.
 
 ## Install
 
-There are no store listings. Build the APK yourself (see below) and install it:
+There are no store listings. Either download the signed APK from the
+[Releases](../../releases) page, or build it yourself (see below). Then install it, with USB debugging enabled on the
+phone:
 
 ```bash
-adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r automations-1.0.0.apk
 ```
 
-Release builds are unsigned; sign them with your own key (`zipalign` + `apksigner`) before installing.
+(You can also open the APK on the phone and allow installs from your browser or file manager.)
+
+### Verify a download
+
+Each release publishes `automations-<version>.apk` and a `.sha256` file. Check the file you downloaded:
+
+```bash
+sha256sum -c automations-1.0.0.apk.sha256
+```
+
+On Windows PowerShell: `(Get-FileHash automations-1.0.0.apk -Algorithm SHA256).Hash` and compare it with the `.sha256` file.
+Release APKs are signed with a key whose certificate has this SHA-256 fingerprint
+(check with `apksigner verify --print-certs automations-1.0.0.apk`):
+
+```
+a8eb55858f61723f49a0579dbc84102a7290b69782afe2e8816f645849da402c
+```
+
+An APK that does not match was not published by this project. Because debug and release builds are signed with
+different keys, installing a release over a debug build (or the other way round) requires uninstalling the first one.
 
 ### First-run setup
 
@@ -82,8 +103,13 @@ connection for the first Gradle sync.
 ./gradlew testDebugUnitTest      # unit tests
 ./gradlew lintRelease            # Android lint
 ./gradlew assembleDebug          # app/build/outputs/apk/debug/app-debug.apk
-./gradlew assembleRelease        # unsigned release APK
+./gradlew assembleRelease        # release APK (unsigned unless you provide a signing key, see below)
 ```
+
+To sign your own release build, create a keystore and a properties file **outside the repository** with the keys
+`storeFile`, `storePassword`, `keyAlias` and `keyPassword`, then point `AUTOMATIONS_KEYSTORE_PROPERTIES` at it before
+running `assembleRelease` (or put a git-ignored `keystore.properties` in the project root). Without it the build still
+works and produces `app-release-unsigned.apk`. See [docs/RELEASING.md](docs/RELEASING.md).
 
 On Windows with Android Studio installed, `scripts/build.ps1`, `scripts/install.ps1` and `scripts/logs.ps1` wrap the
 same commands and set `JAVA_HOME`, `ANDROID_HOME` and `adb` for you.

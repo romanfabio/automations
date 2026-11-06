@@ -44,3 +44,6 @@ desktop.ini
 .claude/
 *.log
 hs_err_pid*
+
+# Local release artifacts
+/release/

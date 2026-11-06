@@ -92,6 +92,13 @@ phone. More scenarios: [docs/TESTING.md](docs/TESTING.md).
 - Keep the minimum Android version in sync in `app/build.gradle.kts`, `README.md` and this file.
 - Version bumps: `versionName` / `versionCode` in `app/build.gradle.kts`, plus the version line in `README.md`.
 
+## Releasing
+
+Process and checklist: [docs/RELEASING.md](docs/RELEASING.md). Release signing is optional in Gradle: it reads the file named
+by the `AUTOMATIONS_KEYSTORE_PROPERTIES` environment variable (kept outside the repo), otherwise the release APK is built
+unsigned. Never put a keystore, its password or that properties file in the repository, and never publish an APK that was
+not installed and checked on a phone first.
+
 ## Never commit
 
 Keystores and signing files (`*.jks`, `*.keystore`, `keystore.properties`), `local.properties`, `.env*`,
